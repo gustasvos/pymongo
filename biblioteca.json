@@ -1,0 +1,26 @@
+{
+    "usuario": {
+        "id": 1,
+        "nome": ""
+    },
+    "emprestimo": {
+        "id": 1,
+        "usuario_id": 1,
+        "livro_id": 1,
+        "usuario_nome": "",
+        "livro_titulo": "",
+        "data_emprestimo": "00-00-0000",
+        "data_devolucao": "00-00-0000"
+    },
+    "livro": {
+        "id": 1,
+        "autor_id": 1,
+        "titulo": "",
+        "editora": "",
+        "ano_publicacao": 2000
+    },
+    "autor": {
+        "id": 1,
+        "nome": ""
+    }
+}

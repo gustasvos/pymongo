@@ -1,0 +1,60 @@
+{
+    "usuario": {
+        "id": 1,
+        "nome": "",
+        "email": "",
+        "senha": "",
+        "cpf": "",
+        "endereco": [
+            {
+                "cep": "",
+                "cidade": "",
+                "estado": "",
+                "rua": "",
+                "numero": ""
+            }
+        ],
+        "cartao": ""
+    },
+    "produto": {
+        "id": 1,
+        "nome": "",
+        "descricao": "",
+        "preco": 10.00
+    },
+    "compras": {
+        "id": 1,
+        "usuario_id": 1,
+        "vendedor_id": 1,
+        "produto_id": 1,
+        "usuario_nome": "",
+        "vendedor_nome": "",
+        "produto_nome": "",
+        "produto_preco": "",
+        "frete": 10.00,
+        "valor": 10.00
+    },
+    "vendedor": {
+        "id": 1,
+        "nome": "",
+        "cnpj": "",
+        "email": "",
+        "endereco": {
+            "cep": "",
+            "cidade": "",
+            "estado": "",
+            "rua": "",
+            "numero": ""
+        },
+        "senha": ""
+    },
+    "favoritos": {
+        "id": 1,
+        "usuario_id": 1,
+        "produto_id": 1,
+        "usuario_nome": "",
+        "produto_nome": "",
+        "produto_descricao": "",
+        "produto_preco": 10.00
+    }
+}
