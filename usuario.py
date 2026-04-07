@@ -1,47 +1,4 @@
-from pymongo import MongoClient
-from pymongo.server_api import ServerApi
- 
-uri = "mongodb+srv://gustavo:yQbJQxTZwPH5DThw@dsm-bdnosql.ic9sxoy.mongodb.net/?retryWrites=true&w=majority"
- 
-# Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
-db = client["mercadolivre"]
- 
-# collections
-usuario_col = db.usuario
-produto_col = db.produto
-compras_col = db.compras
-vendedor_col = db.vendedor
-
-def read_collection(col):
-    print(f"\nCollection {col.name}\n")
-    docs = list(col.find())
-
-    # cursor = col.find()
-
-    if not docs:
-        print("Nenhum documento encontrado")
-        return []
-    
-    for i, doc in enumerate(docs, start=1):
-        if col == usuario_col or col == produto_col or col == vendedor_col:
-            print(f"{i}. {doc["nome"]}")
-        elif col == compras_col:
-            print(f"{i}. {doc["valor"]}")
-    return docs
-
-def select_collection(col):
-    docs = read_collection(col)
-    if not docs:
-        return None
-    
-    while True:
-        option = int(input("\nSelecione o número do documento: "))
-        if 1 <= option <= len(docs):
-            return docs[option - 1]
-        else:
-            print(f"Índice inválido, escolha entre 1 e {len(docs)}.")
- 
+from conexao import usuario_col, select_collection
 
 def create_usuario():
     print("\nInserindo um novo usuário")
@@ -79,7 +36,7 @@ def create_usuario():
     }
  
     x = usuario_col.insert_one(usuario_doc)
-    print("Documento inserido com _id", x.inserted_id)
+    print("Usuário inserido com _id", x.inserted_id)
 
 def delete_usuario():
     print("\nSelecione o usuario para remover: ")
@@ -129,17 +86,13 @@ def update_usuario():
     print("Usuario atualizado com sucesso.")
 
         
+def read_usuario():
+    print("\nSelecione o documento que deseja visualizar: ")
+    doc = select_collection(usuario_col)
 
+    if doc is None:
+        return
 
+    print(doc)
 
-read_collection(usuario_col)
-# read_collection(vendedor_col)
-
-# update_usuario()
- 
-# create_usuario()
- 
-# Returns all documents, but excludes the _id field
-# cursor = usuario_col.find()
-# for document in cursor:
-#     print(document["nome"] + ' ' + document["email"])
+read_usuario()
