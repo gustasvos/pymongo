@@ -95,4 +95,5 @@ def read_usuario():
 
     print(doc)
 
-read_usuario()
+# update_usuario()
+# create_usuario()
