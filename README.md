@@ -6,8 +6,10 @@ Crie o arquivo `.env` na raiz do projeto e insira sua URI do mongodb:
 MONGO_URI=mongodb+srv://USUARIO:SENHA@HOST/?retryWrites=true&w=majority
 ```
 
-Depois basta instalar as dependencias:
+Depois instalar as dependencias e rodar o `main.py`:
 
 ```bash
-pip install -r requirements.txt
+> pip install -r requirements.txt
+> python3 main.py
 ```
+
