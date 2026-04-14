@@ -14,6 +14,17 @@
                 "numero": ""
             }
         ],
+        "favoritos": [
+            {
+                "id": 1,
+                "usuario_id": 1,
+                "produto_id": 1,
+                "usuario_nome": "",
+                "produto_nome": "",
+                "produto_descricao": "",
+                "produto_preco": 10.00
+            }
+        ],
         "cartao": ""
     },
     "produto": {
@@ -47,14 +58,5 @@
             "numero": ""
         },
         "senha": ""
-    },
-    "favoritos": {
-        "id": 1,
-        "usuario_id": 1,
-        "produto_id": 1,
-        "usuario_nome": "",
-        "produto_nome": "",
-        "produto_descricao": "",
-        "produto_preco": 10.00
     }
 }

@@ -1,56 +1,107 @@
-from conexao import favoritos_col, select_collection
+from conexao import favoritos_col, usuario_col, produto_col, select_collection
+from produto import select_collection as select_produto
 
 def create_favorito():
-    print("\nInserindo um novo favorito")
-    usuario_nome = input("Nome do usuário: ")
-    produto_nome = input("Nome do produto: ")
-    produto_descricao = input("Descrição do produto: ")
-    produto_preco = float(input("Preço do produto: "))
-
-    favorito_doc = {
-        "usuario_nome": usuario_nome,
-        "produto_nome": produto_nome,
-        "produto_descricao": produto_descricao,
-        "produto_preco": produto_preco
+    print("\nSelecione o usuario: ")
+    usuario = select_collection(usuario_col)
+    if usuario is None:
+        return
+    
+    print("\nSelecione o produto: ")
+    produto = select_produto(produto_col)
+    if produto is None:
+        return
+    
+    favorito = {
+        "usuario_id": usuario["_id"],
+        "produto_id": produto["_id"],
+        "usuario_nome": usuario["nome"],
+        "produto_nome": produto["nome"],
+        "produto_descricao": produto["descricao"],
+        "produto_preco": produto["preco"]
     }
 
-    new_favorito = favoritos_col.insert_one(favorito_doc)
-    print("Favorito inserido com _id", new_favorito.inserted_id)
+    usuario_col.update_one(
+        {"_id": usuario["_id"]},
+        {"$push": {"favoritos": favorito}}
+    )
+    print("Produto " + produto["nome"] + " foi adicionado como favorito para o usuario " + usuario["nome"])
 
 
 def delete_favorito():
-    print("\nSelecione o favorito para remover: ")
-    doc = select_collection(favoritos_col)
-    if doc is None:
+    print("\nSelecione o usuário: ")
+    usuario = select_collection(usuario_col)
+    if usuario is None:
         return
 
-    favoritos_col.delete_one({"_id": doc["_id"]})
-    print("Favorito deletado com sucesso.")
+    fav, _ = select_favorito(usuario)
+    if fav is None:
+        return
+
+    usuario_col.update_one(
+        {"_id": usuario["_id"]},
+        {"$pull": {"favoritos": {"produto_id": fav["produto_id"]}}}
+    )
+    print(f"Favorito '{fav['produto_nome']}' removido com sucesso.")
+
+def select_favorito(usuario):
+    favoritos = usuario.get("favoritos", [])
+    if not favoritos:
+        print("Nenhum favorito encontrado.")
+        return None, None
+
+    for i, fav in enumerate(favoritos, start=1):
+        print(f"{i}. {fav['produto_nome']} - R$ {fav['produto_preco']}")
+
+    while True:
+        option = int(input("\nSelecione o número do favorito: "))
+        if 1 <= option <= len(favoritos):
+            return favoritos[option - 1], option - 1
+        print(f"Índice inválido, escolha entre 1 e {len(favoritos)}.")
 
 
 def update_favorito():
-    print("\nSelecione o favorito para atualizar: ")
-    doc = select_collection(favoritos_col)
-    if doc is None:
+    print("\nSelecione o usuario: ")
+    usuario = select_collection(usuario_col)
+    if usuario is None:
         return
-
-    print("Dados do favorito:\n", doc)
-    ignored_fields = ["_id"]
+    
+    fav, idx = select_favorito(usuario)
+    if fav is None:
+        return
+    
+    ignored_fields = ["usuario_id", "produto_id", "usuario_nome"]
     new_values = {}
-    for field in doc:
+    for field in fav:
         if field in ignored_fields:
             continue
-        new_doc = input(f"Novo {field} ({doc[field]}): ").strip()
-        if new_doc:
-            new_values[field] = new_doc
+        novo = input(f"{field} [{fav[field]}]: ".strip())
+        if novo:
+            new_values[field] = novo
 
-    favoritos_col.update_one({"_id": doc["_id"]}, {"$set": new_values})
-    print("Favorito atualizado com sucesso.")
+    usuario_col.update_one(
+        {"_id": usuario["_id"]},
+        {"$set": {f"favoritos.{idx}.{k}": v for k, v in new_values.items()}}
+    )
+    print("Favorito atualizado com sucesso")
 
 
 def read_favorito():
-    print("\nSelecione o documento que deseja visualizar: ")
-    doc = select_collection(favoritos_col)
-    if doc is None:
+    print("\nSelecione o usuario: ")
+    usuario = select_collection(usuario_col)
+    if usuario is None:
         return
-    print(doc)
+    
+    favoritos = usuario.get("favoritos")
+    if not favoritos:
+        print("Nenhum favorito encontrado.")
+        return
+
+    fav, _ = select_favorito(usuario)
+    if fav is None:
+        return
+    
+    print(fav)    
+    # for i, fav in enumerate(favoritos, start=1):
+    #     print(f"{i}. {fav["produto_nome"]} - R$ {fav["produto_preco"]}")
+
