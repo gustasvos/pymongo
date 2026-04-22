@@ -1,4 +1,4 @@
-from favoritos import create_favorito, delete_favorito, update_favorito, read_favorito
+from favoritos import create_favorito, delete_favorito, read_favorito
 from produto import create_produto, delete_produto, update_produto, read_produto
 from usuario import create_usuario, delete_usuario, update_usuario, read_usuario
 from vendedor import create_vendedor, delete_vendedor, update_vendedor, read_vendedor
@@ -9,22 +9,25 @@ acoes_crud = {
     "Produto":   (create_produto,  read_produto,  update_produto,  delete_produto),
     "Vendedor":  (create_vendedor, read_vendedor, update_vendedor, delete_vendedor),
     "Compras":   (create_compra,   read_compra,   update_compra,   delete_compra),
-    "Favoritos": (create_favorito, read_favorito, update_favorito, delete_favorito),
+    "Favoritos": (create_favorito, read_favorito, None, delete_favorito),
 }
 
 def menu_crud(col):
     create, read, update, delete = acoes_crud[col]
 
     while True:
-        print(
-            f"""
-1. Criar {col}
-2. Ler {col}
-3. Atualizar {col}
-4. Deletar {col}
-0. Voltar
-            """
-        )
+        print(f"\n{col.upper()}")
+        print(f"1. Criar {col}")
+        print(f"2. Ler {col}")
+
+        if (update):
+            print(f"3. Atualizar {col}")
+            print(f"4. Deletar {col}")
+            print(f"0. Voltar")
+        else:
+            print(f"3. Deletar {col}")
+            print(f"0. Voltar")
+
         option = int(input("Escolha uma opção: "))
 
         if (option == 1):
@@ -32,8 +35,11 @@ def menu_crud(col):
         elif (option == 2):
             read()
         elif (option == 3):
-            update()
-        elif (option == 4):
+            if update:
+                update()
+            else:
+                delete()
+        elif (option == 4 and update):
             delete()
         elif (option == 0):
             break

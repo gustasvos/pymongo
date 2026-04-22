@@ -12,6 +12,12 @@ def create_favorito():
     if produto is None:
         return
     
+    favoritos = usuario.get("favoritos", [])
+    ja_favoritado = any(fav["produto_id"] == produto["_id"] for fav in favoritos)
+    if ja_favoritado:
+        print(f"Produto '{produto["nome"]}' já está favoritado")
+        return
+
     favorito = {
         "usuario_id": usuario["_id"],
         "produto_id": produto["_id"],
@@ -20,6 +26,7 @@ def create_favorito():
         "produto_descricao": produto["descricao"],
         "produto_preco": produto["preco"]
     }
+
 
     usuario_col.update_one(
         {"_id": usuario["_id"]},
@@ -60,30 +67,30 @@ def select_favorito(usuario):
         print(f"Índice inválido, escolha entre 1 e {len(favoritos)}.")
 
 
-def update_favorito():
-    print("\nSelecione o usuario: ")
-    usuario = select_collection(usuario_col)
-    if usuario is None:
-        return
+# def update_favorito():
+#     print("\nSelecione o usuario: ")
+#     usuario = select_collection(usuario_col)
+#     if usuario is None:
+#         return
     
-    fav, idx = select_favorito(usuario)
-    if fav is None:
-        return
+#     fav, idx = select_favorito(usuario)
+#     if fav is None:
+#         return
     
-    ignored_fields = ["usuario_id", "produto_id", "usuario_nome"]
-    new_values = {}
-    for field in fav:
-        if field in ignored_fields:
-            continue
-        novo = input(f"{field} [{fav[field]}]: ".strip())
-        if novo:
-            new_values[field] = novo
+#     ignored_fields = ["usuario_id", "produto_id", "usuario_nome"]
+#     new_values = {}
+#     for field in fav:
+#         if field in ignored_fields:
+#             continue
+#         novo = input(f"{field} [{fav[field]}]: ".strip())
+#         if novo:
+#             new_values[field] = novo
 
-    usuario_col.update_one(
-        {"_id": usuario["_id"]},
-        {"$set": {f"favoritos.{idx}.{k}": v for k, v in new_values.items()}}
-    )
-    print("Favorito atualizado com sucesso")
+#     usuario_col.update_one(
+#         {"_id": usuario["_id"]},
+#         {"$set": {f"favoritos.{idx}.{k}": v for k, v in new_values.items()}}
+#     )
+#     print("Favorito atualizado com sucesso")
 
 
 def read_favorito():
