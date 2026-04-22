@@ -57,7 +57,7 @@ def update_usuario():
     
     print("Dados do usuário:\n", doc)
 
-    ignored_fields = ["_id", "endereco"]
+    ignored_fields = ["_id", "endereco", "favoritos"]
     new_values = {}
 
     for field in doc:

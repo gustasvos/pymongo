@@ -1,4 +1,4 @@
-from conexao import produto_col, select_collection
+from conexao import produto_col, usuario_col, select_collection
 
 def create_produto():
     print("\nInserindo um novo produto")
@@ -46,7 +46,27 @@ def update_produto():
             new_values[field] = new_doc
 
     produto_col.update_one({"_id": doc["_id"]}, {"$set": new_values})
+    
+    campos_favorito = {
+        "nome": "produto_nome",
+        "descricao": "produto_descricao",
+        "preco": "produto_preco"
+    }
+
+    favorito_updates = {}
+    for campo_produto, campo_favorito in campos_favorito.items():
+        if campo_produto in new_values:
+            favorito_updates[f"favoritos.$[fav].{campo_favorito}"] = new_values[campo_produto]
+
+    if favorito_updates:
+        usuario_col.update_many(
+            {"favoritos.produto_id": doc["_id"]},
+            {"$set": favorito_updates},
+            array_filters=[{"fav.produto_id": doc["_id"]}]
+        )
+
     print("produto atualizado com sucesso.")
+
 
         
 def read_produto():
